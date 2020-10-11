@@ -12,6 +12,10 @@ Create /etc/apt/sources.list.d/pgdg.list. The distributions are called codename-
 ```bash 
 sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
 ```
+if it results to an error,change to buster by trying the following :
+```bash 
+sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt buster-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+```
 
 Finally, update the package lists, and start installing packages:
 

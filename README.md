@@ -24,4 +24,7 @@ sudo apt-get update
 sudo apt-get install pgadmin3
 ```
 
+Then start it:
+> $ pgadmin3
+
 Have a nice day!

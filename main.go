@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/edwinnduti/postgres-login/router"
+	"github.com/edwinnduti/go-postgres/router"
 	"log"
 	"os"
 	"net/http"

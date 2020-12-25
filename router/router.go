@@ -1,7 +1,7 @@
 package router
 
 import(
-	"github.com/edwinnduti/postgres-login/middlewares"
+	"github.com/edwinnduti/go-postgres/middlewares"
 	"github.com/gorilla/mux"
 )
 

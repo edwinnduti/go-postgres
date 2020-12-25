@@ -4,9 +4,9 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"github.com/edwinnduti/postgres-login/models"
+	"github.com/edwinnduti/go-postgres/models"
 	"github.com/gorilla/mux"
-	"github.com/labstack/gommon/log"
+	"log"
 	_ "github.com/lib/pq"
 	"net/http"
 	"os"
@@ -294,6 +294,6 @@ func RemoveUser(id int64) int64 {
 // handle errors
 func Check(err error) {
 	if err != nil {
-		log.Print(err)
+		log.Println(err)
 	}
 }

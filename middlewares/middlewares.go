@@ -1,13 +1,13 @@
 package middlewares
 
-import(
+import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"github.com/edwinnduti/postgres-login/models"
 	"github.com/gorilla/mux"
 	"github.com/labstack/gommon/log"
 	_ "github.com/lib/pq"
-	"github.com/edwinnduti/postgres-login/models"
 	"net/http"
 	"os"
 	"strconv"
@@ -15,14 +15,15 @@ import(
 
 // returned response
 type Response struct {
-	ID		uint8			`json:"id,omitempty"`
-	Message string			`json:"message,omitempty"`
-	user	models.User 	`json:"user"`
+	ID      int64       `json:"id,omitempty"`
+	Message string      `json:"message,omitempty"`
+	user    models.User `json:"user"`
 }
+
 // create connection with postgres DB
 func CreateConnection() *sql.DB {
 	// open connection
-	db,err := sql.Open("postgres",os.Getenv("POSTGRES_URI"))
+	db, err := sql.Open("postgres", os.Getenv("POSTGRES_URI"))
 	Check(err)
 
 	// Check connection
@@ -34,13 +35,13 @@ func CreateConnection() *sql.DB {
 }
 
 // create a user in postgres db
-func CreateUser(w http.ResponseWriter,r *http.Request) {
+func CreateUser(w http.ResponseWriter, r *http.Request) {
 	// set header content to type x-www-form-urlencoded
 	// Allow all origin to handle cors
-	w.Header().Set("Content-Type","application/x-www-forn-urlencoded")
-	w.Header().Set("Access-Control-Allow-Origin","*")
-	w.Header().Set("Access-Control-Allow-Methods","POST")
-	w.Header().Set("Access-Control-Allow-Headers","Content-Type")
+	w.Header().Set("Content-Type", "application/x-www-forn-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
 	// create new user
 	var user models.User
@@ -54,59 +55,59 @@ func CreateUser(w http.ResponseWriter,r *http.Request) {
 
 	// response to be return
 	response := Response{
-		ID: insertID,
+		ID:      insertID,
 		Message: "New user created successfully",
-		user: user,
+		user:    user,
 	}
 
 	json.NewEncoder(w).Encode(response)
 }
 
 // Get a single user
-func GetUser(w http.ResponseWriter,r *http.Request) {
+func GetUser(w http.ResponseWriter, r *http.Request) {
 	// set header content to type x-www-form-urlencoded
 	// Allow all origin to handle cors
-	w.Header().Set("Content-Type","application/x-www-forn-urlencoded")
-	w.Header().Set("Access-Control-Allow-Origin","*")
+	w.Header().Set("Content-Type", "application/x-www-forn-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	// get id from url
 	vars := mux.Vars(r)
-	id,err := strconv.Atoi(vars["id"])
+	id, err := strconv.Atoi(vars["id"])
 	Check(err)
 
 	// call get user function
-	user,err := RetrieveUser(uint8(id))
+	user, err := RetrieveUser(int64(id))
 	Check(err)
 
 	json.NewEncoder(w).Encode(user)
 }
 
 // Get all user
-func GetAllUser(w http.ResponseWriter,r *http.Request) {
+func GetAllUser(w http.ResponseWriter, r *http.Request) {
 	// set header content to type x-www-form-urlencoded
 	// Allow all origin to handle cors
-	w.Header().Set("Content-Type","application/x-www-forn-urlencoded")
-	w.Header().Set("Access-Control-Allow-Origin","*")
+	w.Header().Set("Content-Type", "application/x-www-forn-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	// call get user function
-	users,err := RetrieveAllUsers()
+	users, err := RetrieveAllUsers()
 	Check(err)
 
 	json.NewEncoder(w).Encode(users)
 }
 
 // Update single user
-func UpdateUser(w http.ResponseWriter,r *http.Request) {
+func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	// set header content to type x-www-form-urlencoded
 	// Allow all origin to handle cors
-	w.Header().Set("Content-Type","application/x-www-forn-urlencoded")
-	w.Header().Set("Access-Control-Allow-Origin","*")
-	w.Header().Set("Access-Control-Allow-Methods","PUT")
-	w.Header().Set("Access-Control-Allow-Headers","Content-Type")
+	w.Header().Set("Content-Type", "application/x-www-forn-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "PUT")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
 	// get id from url
 	vars := mux.Vars(r)
-	id,err := strconv.Atoi(vars["id"])
+	id, err := strconv.Atoi(vars["id"])
 	Check(err)
 
 	// create new user
@@ -117,44 +118,44 @@ func UpdateUser(w http.ResponseWriter,r *http.Request) {
 	Check(err)
 
 	// call get user function
-	updatedRows := AmendUser(uint8(id),user)
+	updatedRows := AmendUser(int64(id), user)
 
 	// message to be returned
-	message := fmt.Sprintf("User updated successfully.Total rows/records affected %v",updatedRows)
+	message := fmt.Sprintf("User updated successfully.Total rows/records affected %v", updatedRows)
 
 	// the returned response
 	response := Response{
-		ID: uint8(id),
+		ID:      int64(id),
 		Message: message,
-		user: user,
+		user:    user,
 	}
 
 	json.NewEncoder(w).Encode(response)
 }
 
 // Delete Single user
-func DeleteUser(w http.ResponseWriter,r *http.Request) {
+func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	// set header content to type x-www-form-urlencoded
 	// Allow all origin to handle cors
-	w.Header().Set("Content-Type","application/x-www-forn-urlencoded")
-	w.Header().Set("Access-Control-Allow-Origin","*")
-	w.Header().Set("Access-Control-Allow-Methods","DELETE")
-	w.Header().Set("Access-Control-Allow-Headers","Content-Type")
+	w.Header().Set("Content-Type", "application/x-www-forn-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "DELETE")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
 	// get id from url
 	vars := mux.Vars(r)
-	id,err := strconv.Atoi(vars["id"])
+	id, err := strconv.Atoi(vars["id"])
 	Check(err)
 
 	// call get user function
-	deletedRows := RemoveUser(uint8(id))
+	deletedRows := RemoveUser(int64(id))
 
 	// message to be returned
-	message := fmt.Sprintf("User deleted successfully.Total rows/records affected %v",deletedRows)
+	message := fmt.Sprintf("User deleted successfully.Total rows/records affected %v", deletedRows)
 
 	// the returned response
 	response := Response{
-		ID: uint8(id),
+		ID:      int64(id),
 		Message: message,
 	}
 
@@ -164,7 +165,7 @@ func DeleteUser(w http.ResponseWriter,r *http.Request) {
 /*	[*] handler functions [*]	*/
 
 // insert user
-func InsertUser(user models.User) uint8 {
+func InsertUser(user models.User) int64 {
 	// create postgres db
 	db := CreateConnection()
 	defer db.Close()
@@ -173,18 +174,18 @@ func InsertUser(user models.User) uint8 {
 	sqlInsertStatement := `INSERT INTO users (name,age,location) VALUES ($1,$2,$3) RETURNING userid`
 
 	// returned id will be stored here
-	var id uint8
+	var id int64
 
 	// execute sql statement
-	err := db.QueryRow(sqlInsertStatement,user.Name,user.Age,user.Location).Scan(&id)
+	err := db.QueryRow(sqlInsertStatement, user.Name, user.Age, user.Location).Scan(&id)
 	Check(err)
 
-	fmt.Println("Inserted a single record",id)
+	fmt.Println("Inserted a single record", id)
 	return id
 }
 
 // get single user
-func RetrieveUser(id uint8) (models.User,error) {
+func RetrieveUser(id int64) (models.User, error) {
 	// create postgres db
 	db := CreateConnection()
 	defer db.Close()
@@ -196,10 +197,10 @@ func RetrieveUser(id uint8) (models.User,error) {
 	var user models.User
 
 	// execute sql statement
-	row := db.QueryRow(sqlGetSingleUserStatement,id)
+	row := db.QueryRow(sqlGetSingleUserStatement, id)
 
 	// unmarshal the row object to user model
-	err := row.Scan(&user.ID,&user.Name,&user.Age,&user.Location)
+	err := row.Scan(&user.ID, &user.Name, &user.Age, &user.Location)
 
 	switch err {
 	case sql.ErrNoRows:
@@ -212,11 +213,11 @@ func RetrieveUser(id uint8) (models.User,error) {
 	}
 
 	// return empty user and error
-	return user,nil
+	return user, nil
 }
 
 // get all users
-func RetrieveAllUsers() ([]models.User,error) {
+func RetrieveAllUsers() ([]models.User, error) {
 	// create postgres db
 	db := CreateConnection()
 	defer db.Close()
@@ -228,30 +229,30 @@ func RetrieveAllUsers() ([]models.User,error) {
 	var users []models.User
 
 	// execute sql statement
-	rows,err := db.Query(sqlGetAllUsersStatement)
+	rows, err := db.Query(sqlGetAllUsersStatement)
 	Check(err)
 
 	defer rows.Close()
 
 	// unmarshal the row object to user model
-	for rows.Next(){
+	for rows.Next() {
 		// empty user
 		var user models.User
 
 		// deposit each row object to empty user model
-		err = rows.Scan(&user.ID,&user.Name,&user.Age,&user.Location)
+		err = rows.Scan(&user.ID, &user.Name, &user.Age, &user.Location)
 		Check(err)
 
 		// add user to users slice
-		users = append(users,user)
+		users = append(users, user)
 	}
 
 	// return empty user and error
-	return users,nil
+	return users, nil
 }
 
 // update user
-func AmendUser(id uint8,user models.User) (uint8) {
+func AmendUser(id int64, user models.User) int64 {
 	// create postgres db
 	db := CreateConnection()
 	defer db.Close()
@@ -260,18 +261,18 @@ func AmendUser(id uint8,user models.User) (uint8) {
 	sqlUpdateUserStatement := `UPDATE users SET name=$2,age=$3,location=$4 WHERE userid=$1`
 
 	// execute sql statement
-	res,err := db.Exec(sqlUpdateUserStatement,id,user.Name,user.Location,user.Age)
+	res, err := db.Exec(sqlUpdateUserStatement, id, user.Name, user.Location, user.Age)
 	Check(err)
 
 	// returned affected rows
-	affectedRows,err := res.RowsAffected()
+	affectedRows, err := res.RowsAffected()
 	Check(err)
 
-	return uint8(affectedRows)
+	return int64(affectedRows)
 }
 
 // delete user
-func RemoveUser(id uint8) (uint8) {
+func RemoveUser(id int64) int64 {
 	// create postgres db
 	db := CreateConnection()
 	defer db.Close()
@@ -280,20 +281,19 @@ func RemoveUser(id uint8) (uint8) {
 	sqlDeleteUserStatement := `DELETE FROM users WHERE userid=$1`
 
 	// execute sql statement
-	res,err := db.Exec(sqlDeleteUserStatement,id)
+	res, err := db.Exec(sqlDeleteUserStatement, id)
 	Check(err)
 
 	// returned affected rows
-	affectedRows,err := res.RowsAffected()
+	affectedRows, err := res.RowsAffected()
 	Check(err)
 
-	return uint8(affectedRows)
+	return int64(affectedRows)
 }
 
 // handle errors
-func Check(err error){
-	if err != nil{
+func Check(err error) {
+	if err != nil {
 		log.Print(err)
 	}
 }
-

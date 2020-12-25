@@ -1,5 +1,10 @@
 # postgres and Golang API.
 
+[![Build Status](https://travis-ci.com/edwinnduti/go-postgres.svg?branch=master)](https://travis-ci.com/edwinnduti/go-postgres)
+![License: MIT](https://img.shields.io/badge/Language-Golang-blue.svg)
+![License: MIT](https://img.shields.io/badge/Database-POSTGRESQL-darkblue.svg)
+
+
 ### Requirements:
 * Postgresql
 * Golang

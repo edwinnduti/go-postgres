@@ -11,7 +11,7 @@ func main() {
 	// call router
 	r := router.Router()
 
-	// establish portnumber
+	// establish port number
 	Port := os.Getenv("PORT")
 	if Port == "" {
 		Port = "8030"

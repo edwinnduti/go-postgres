@@ -1,29 +1,45 @@
+/*
+[*] Copyright © 2021
+[*] Dev/Author -> Edwin Nduti
+*/
+
 package main
 
+// libraries to use
 import (
 	"github.com/edwinnduti/go-postgres/router"
+	"github.com/gorilla/handlers"
+	"github.com/urfave/negroni"
 	"log"
-	"os"
 	"net/http"
+	"os"
 )
 
+// Main function
 func main() {
-	// call router
+
+	//Register router
 	r := router.Router()
 
-	// establish port number
+	//Get port
 	Port := os.Getenv("PORT")
 	if Port == "" {
-		Port = "8030"
+		Port = "8081"
 	}
 
-	// set server
+	// set CORS
+	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With"})
+	originsOk := handlers.AllowedOrigins([]string{"*"})
+	methodsOk := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"})
+
+	// establish logger
+	n := negroni.Classic()
+	n.UseHandler(r)
 	server := &http.Server{
-		Handler: r, // n
+		Handler: handlers.CORS(originsOk, headersOk, methodsOk)(n),
 		Addr:    ":" + Port,
 	}
 
-	// log server output
 	log.Printf("Listening on PORT: %s", Port)
 	server.ListenAndServe()
 }

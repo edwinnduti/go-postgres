@@ -9,12 +9,28 @@
 ### Requirements:
 * Postgresql
 * Golang
-
+* Add .env file with values to specified keys:
+    ```txt
+    HOST=
+	DBPORT=
+	USER=
+	DBNAME=
+	PASSWORD=
+    ```
+### Run code locally
  ```
  $ git clone https://github.com/edwinnduti/go-postgres.git 
  $ cd go-postgres
  $ go mod download
  $ go run main.go
+ ```
+
+ ### Run code using Docker
+ ```
+ $ git clone https://github.com/edwinnduti/go-postgres.git 
+ $ cd go-postgres
+ $ sudo docker build -t startapp -f Dockerfile .
+ $ sudo docker run -it -p 8010:8010 startapp
  ```
 
 Available :
@@ -28,5 +44,5 @@ Available :
 | update single user    |   /api/user/{user_id}		|	UPDATE  |
 
 
- Have a nice day!
+ Have a day full of ❤️
 

@@ -21,6 +21,6 @@ jobs:
       - name: Show the go version in use
         run: go version
       - name: Build the app
-        run:
+        run: |
             go mod download
-            go build .
+            go build main.go

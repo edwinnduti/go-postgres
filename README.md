@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.com/edwinnduti/go-postgres.svg?branch=master)](https://travis-ci.com/edwinnduti/go-postgres)
 ![License: MIT](https://img.shields.io/badge/Language-Golang-blue.svg)
+[![Build GO workflow](https://github.com/edwinnduti/go-postgres/actions/workflows/deploy.yaml/badge.svg?branch=master)](https://github.com/edwinnduti/go-postgres/actions/workflows/deploy.yaml)
 ![License: MIT](https://img.shields.io/badge/Database-POSTGRESQL-darkblue.svg)
 
 

@@ -3,15 +3,16 @@ package lib
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/joho/godotenv"
-	"github.com/edwinnduti/go-postgres/model"
-	"github.com/gorilla/mux"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
+
+	"github.com/edwinnduti/go-postgres/model"
+	"github.com/gorilla/mux"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"github.com/joho/godotenv"
 )
 
 // declare db,err and their types
@@ -20,7 +21,7 @@ var err error
 var config model.Config
 
 // init function
-func init(){
+func init() {
 	err = godotenv.Load()
 	if err != nil {
 		log.Fatalf("Error getting env:  %v\n", err)
@@ -28,7 +29,7 @@ func init(){
 
 		scrub.WriteHeader(http.StatusOK)
 		response := model.Response{
-			Code : 500,
+			Code:    500,
 			Message: "GettingEnvError!",
 		}
 		// give response to client
@@ -36,19 +37,19 @@ func init(){
 
 	}
 
-	fmt.Println("We are getting the env values\n")
+	fmt.Println("We are getting the env values")
 
 	// secret keys
-	config.Host    = os.Getenv("HOST")
-	config.Dbport  = os.Getenv("DBPORT")
+	config.Host = os.Getenv("HOST")
+	config.Dbport = os.Getenv("DBPORT")
 	config.Dbusername = os.Getenv("USER")
-	config.Dbname  = os.Getenv("DBNAME")
-	config.Passwd  = os.Getenv("PASSWORD")
+	config.Dbname = os.Getenv("DBNAME")
+	config.Passwd = os.Getenv("PASSWORD")
 }
 
 // connect to database
 func ConnectDb() (*gorm.DB, error) {
-	dbURL := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s",config.Host,config.Dbport,config.Dbusername,config.Dbname,config.Passwd)
+	dbURL := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s", config.Host, config.Dbport, config.Dbusername, config.Dbname, config.Passwd)
 	db, err = gorm.Open("postgres", dbURL)
 	return db, err
 }
@@ -58,22 +59,22 @@ func PostDataHandler(w http.ResponseWriter, r *http.Request) {
 	// connect to database
 	db, err := ConnectDb()
 	if err != nil {
-		log.Fatalf("DB Error: %v\n",err)
+		log.Fatalf("DB Error: %v\n", err)
 
 		w.WriteHeader(http.StatusOK)
 		response := model.Response{
-			Code : 500,
+			Code:    500,
 			Message: "DbConnectionError!",
 		}
 		// give response to client
 		json.NewEncoder(w).Encode(response)
 	}
 
-	fmt.Println("database connected\n")
+	fmt.Println("database connected")
 
 	// make migrations
 	db.AutoMigrate(&model.User{})
-	fmt.Println("database migrated\n")
+	fmt.Println("database migrated")
 
 	// create an empty user struct
 	var user model.User
@@ -81,25 +82,25 @@ func PostDataHandler(w http.ResponseWriter, r *http.Request) {
 	// decode incoming values to user empty struct
 	err = json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
-		log.Fatalf("updating body gave error: %v\n",err)
+		log.Fatalf("updating body gave error: %v\n", err)
 		w.WriteHeader(http.StatusOK)
 		response := model.Response{
-			Code : 500,
+			Code:    500,
 			Message: "DataEnteringError!",
 		}
 		// give response to client
 		json.NewEncoder(w).Encode(response)
 	}
 
-	fmt.Println("decoding achieved\n")
+	fmt.Println("decoding achieved")
 
 	// insert user to database
 	db.Create(&user)
-	fmt.Println("offender inserted\n")
+	fmt.Println("offender inserted")
 
 	// response
 	response := model.Response{
-		Code: 200,
+		Code:    200,
 		Message: "rows created!",
 	}
 
@@ -115,7 +116,7 @@ func GetUserHandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatalf("error parsing identifier: %v\n", err)
 		w.WriteHeader(http.StatusOK)
 		response := model.Response{
-			Code : 500,
+			Code:    500,
 			Message: "ParsingIdentifierFailed!",
 		}
 		// give response to client
@@ -128,11 +129,11 @@ func GetUserHandler(w http.ResponseWriter, r *http.Request) {
 	// connect to database
 	db, err := ConnectDb()
 	if err != nil {
-		log.Fatalf("Database Connection Error: %v\n",err)
+		log.Fatalf("Database Connection Error: %v\n", err)
 
 		w.WriteHeader(http.StatusOK)
 		response := model.Response{
-			Code : 500,
+			Code:    500,
 			Message: "DataEnteringError!",
 		}
 		// give response to client
@@ -141,21 +142,21 @@ func GetUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	// check in db
 	err = db.First(&user, user_id).Error
-	if err !=nil{
+	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			log.Fatalf("Record not found in database: %v\n",err)
+			log.Fatalf("Record not found in database: %v\n", err)
 			w.WriteHeader(http.StatusOK)
 			response := model.Response{
-				Code : 500,
+				Code:    500,
 				Message: "RecordNotFound",
 			}
 			// give response to client
 			json.NewEncoder(w).Encode(response)
 		} else {
-			log.Fatalf("Record not found in database: %v\n",err)
+			log.Fatalf("Record not found in database: %v\n", err)
 			w.WriteHeader(http.StatusOK)
 			response := model.Response{
-				Code : 500,
+				Code:    500,
 				Message: "RecordNotFound",
 			}
 			// give response to client
@@ -175,11 +176,11 @@ func GetAllUsersHandler(w http.ResponseWriter, r *http.Request) {
 	// connect to database
 	db, err := ConnectDb()
 	if err != nil {
-		log.Fatalf("failed to connect: %v\n",err)
+		log.Fatalf("failed to connect: %v\n", err)
 
 		w.WriteHeader(http.StatusOK)
 		response := model.Response{
-			Code : 500,
+			Code:    500,
 			Message: "DataEnteringError!",
 		}
 		// give response to client
@@ -188,21 +189,21 @@ func GetAllUsersHandler(w http.ResponseWriter, r *http.Request) {
 
 	// fetch in db
 	result := db.Find(&users)
-	if result.Error != nil{
+	if result.Error != nil {
 		if err == gorm.ErrRecordNotFound {
-			log.Fatalf("Record not found in database: %v\n",err)
+			log.Fatalf("Record not found in database: %v\n", err)
 			w.WriteHeader(http.StatusOK)
 			response := model.Response{
-				Code : 500,
+				Code:    500,
 				Message: "RecordNotFound",
 			}
 			// give response to client
 			json.NewEncoder(w).Encode(response)
 		} else {
-			log.Fatalf("getting data error: %v\n",err)
+			log.Fatalf("getting data error: %v\n", err)
 			w.WriteHeader(http.StatusOK)
 			response := model.Response{
-				Code : 500,
+				Code:    500,
 				Message: "RecordNotFound",
 			}
 			// give response to client
@@ -223,12 +224,12 @@ func UpdateUserHandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatalf("error parsing identifier: %v\n", err)
 		w.WriteHeader(http.StatusOK)
 		response := model.Response{
-                        Code : 500,
+			Code:    500,
 			Message: "ParsingIdentifierFailed!",
-                }
+		}
 
 		// give response to client
-                json.NewEncoder(w).Encode(response)
+		json.NewEncoder(w).Encode(response)
 	}
 
 	user_id := uint(u64)
@@ -240,24 +241,24 @@ func UpdateUserHandler(w http.ResponseWriter, r *http.Request) {
 	// deposit to newUser
 	err = json.NewDecoder(r.Body).Decode(&newUser)
 	if err != nil {
-		log.Fatalln("updating body gave error: %v\n",err)
+		log.Printf("updating body gave error: %v\n", err)
 		w.WriteHeader(http.StatusOK)
-                response := model.Response{
-                        Code : 500,
+		response := model.Response{
+			Code:    500,
 			Message: "DataEnteringError!",
-                }
-                // give response to client
-                json.NewEncoder(w).Encode(response)
+		}
+		// give response to client
+		json.NewEncoder(w).Encode(response)
 	}
 
 	// connect to database
 	db, err := ConnectDb()
 	if err != nil {
-		log.Fatalf("failed to connect: %v\n",err)
+		log.Fatalf("failed to connect: %v\n", err)
 
 		w.WriteHeader(http.StatusOK)
 		response := model.Response{
-			Code : 500,
+			Code:    500,
 			Message: "DataEnteringError!",
 		}
 
@@ -267,21 +268,21 @@ func UpdateUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	// check in db
 	err = db.First(&oldUser, user_id).Error
-	if err != nil{
-		if err == gorm.ErrRecordNotFound{
-			log.Fatalf("Record was not found: %v",err)
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			log.Fatalf("Record was not found: %v", err)
 			w.WriteHeader(http.StatusOK)
 			response := model.Response{
-				Code : 500,
+				Code:    500,
 				Message: "RecordNotFound",
 			}
 			// give response to client
 			json.NewEncoder(w).Encode(response)
 		} else {
-			log.Fatalf("Record was not found: %v\n",err)
+			log.Fatalf("Record was not found: %v\n", err)
 			w.WriteHeader(http.StatusOK)
 			response := model.Response{
-				Code : 500,
+				Code:    500,
 				Message: "RecordNotFound",
 			}
 			// give response to client
@@ -305,7 +306,7 @@ func DeleteUserHandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatalf("error parsing identifier: %v\n", err)
 		w.WriteHeader(http.StatusOK)
 		response := model.Response{
-			Code : 500,
+			Code:    500,
 			Message: "DataEnteringError!",
 		}
 		// give response to client
@@ -320,33 +321,33 @@ func DeleteUserHandler(w http.ResponseWriter, r *http.Request) {
 	// connect to database
 	db, err := ConnectDb()
 	if err != nil {
-		log.Fatalf("failed to connect: %v\n",err)
+		log.Fatalf("failed to connect: %v\n", err)
 		w.WriteHeader(http.StatusOK)
 		response := model.Response{
-			Code : 500,
+			Code:    500,
 			Message: "DataEnteringError!",
 		}
 		// give response to client
 		json.NewEncoder(w).Encode(response)
 	}
 
-	// search in database 
+	// search in database
 	err = db.First(&user, user_id).Error
-	if err != nil{
-		if err == gorm.ErrRecordNotFound{
-			log.Fatalf("Record was not found: %v",err)
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			log.Fatalf("Record was not found: %v", err)
 			w.WriteHeader(http.StatusOK)
 			response := model.Response{
-				Code : 500,
+				Code:    500,
 				Message: "RecordNotFound",
 			}
 			// give response to client
 			json.NewEncoder(w).Encode(response)
 		} else {
-			log.Fatalf("Record was not found: %v",err)
+			log.Fatalf("Record was not found: %v", err)
 			w.WriteHeader(http.StatusOK)
 			response := model.Response{
-				Code : 500,
+				Code:    500,
 				Message: "RecordNotFound",
 			}
 			// give response to client
@@ -355,9 +356,13 @@ func DeleteUserHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// delete function
+	deletedUserId := user.ID
 	db.Delete(&user)
 
 	// pass response to client
-        response := model.Response{user.ID, "rows deleted!"}
+	response := model.Response{
+		Code:    deletedUserId,
+		Message: "rows deleted!",
+	}
 	json.NewEncoder(w).Encode(response)
 }

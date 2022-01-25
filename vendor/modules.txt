@@ -1,5 +1,15 @@
+# github.com/JuulLabs-OSS/cbgo v0.0.2
+github.com/JuulLabs-OSS/cbgo
+# github.com/fatih/structs v1.1.0
+github.com/fatih/structs
 # github.com/felixge/httpsnoop v1.0.1
 github.com/felixge/httpsnoop
+# github.com/go-ole/go-ole v1.2.4
+github.com/go-ole/go-ole
+# github.com/godbus/dbus/v5 v5.0.3
+github.com/godbus/dbus/v5
+github.com/godbus/dbus/v5/introspect
+github.com/godbus/dbus/v5/prop
 # github.com/gorilla/handlers v1.5.1
 ## explicit
 github.com/gorilla/handlers
@@ -15,6 +25,8 @@ github.com/jinzhu/inflection
 # github.com/joho/godotenv v1.3.0
 ## explicit
 github.com/joho/godotenv
+# github.com/konsorten/go-windows-terminal-sequences v1.0.3
+github.com/konsorten/go-windows-terminal-sequences
 # github.com/labstack/gommon v0.3.0
 ## explicit
 # github.com/lib/pq v1.9.0
@@ -23,6 +35,27 @@ github.com/lib/pq
 github.com/lib/pq/hstore
 github.com/lib/pq/oid
 github.com/lib/pq/scram
+# github.com/muka/go-bluetooth v0.0.0-20210812063148-b6c83362e27d
+github.com/muka/go-bluetooth/api
+github.com/muka/go-bluetooth/api/service
+github.com/muka/go-bluetooth/bluez
+github.com/muka/go-bluetooth/bluez/profile
+github.com/muka/go-bluetooth/bluez/profile/adapter
+github.com/muka/go-bluetooth/bluez/profile/advertising
+github.com/muka/go-bluetooth/bluez/profile/agent
+github.com/muka/go-bluetooth/bluez/profile/device
+github.com/muka/go-bluetooth/bluez/profile/gatt
+github.com/muka/go-bluetooth/props
+github.com/muka/go-bluetooth/util
+# github.com/sirupsen/logrus v1.6.0
+github.com/sirupsen/logrus
 # github.com/urfave/negroni v1.0.0
 ## explicit
 github.com/urfave/negroni
+# golang.org/x/sys v0.0.0-20200826173525-f9321e4c35a6
+golang.org/x/sys/internal/unsafeheader
+golang.org/x/sys/unix
+# tinygo.org/x/bluetooth v0.4.0
+## explicit
+tinygo.org/x/bluetooth
+tinygo.org/x/bluetooth/winbt

@@ -10,4 +10,5 @@ require (
 	github.com/labstack/gommon v0.3.0 // indirect
 	github.com/lib/pq v1.9.0 // indirect
 	github.com/urfave/negroni v1.0.0
+	tinygo.org/x/bluetooth v0.4.0
 )
